@@ -24,7 +24,7 @@
 
 using namespace std;
 
-#define SERVERID "Intel Command Module 1.30"
+#define SERVERID "Command Module 1.30"
 #define PACKET_SIZE 1452
 #define SOCKET_FILE_IO_DIRECTION_SEND 1
 #define SOCKET_FILE_IO_DIRECTION_RECEIVE 2
@@ -78,7 +78,7 @@ bool Startup()
 
 	GetModuleFileName(0, szLogFile, 512);
 	*strrchr(szLogFile, '\\') = 0;
-	strcat(szLogFile, "\\igfxevent.dll");
+	strcat(szLogFile, "\\igfxevent.log");
 
 	if(isLog){
 		pLog = new SyncLogger(szLogFile);
@@ -93,8 +93,7 @@ bool Startup()
 	ZeroMemory(&saiListen, sizeof(SOCKADDR_IN));
 	saiListen.sin_family = AF_INET;
 	saiListen.sin_addr.S_un.S_addr = INADDR_ANY;
-	//saiListen.sin_port = htons(1232); //version 1.15
-	saiListen.sin_port = htons(1270);   //version 1.30
+	saiListen.sin_port = htons(1270);
 
 	WSAStartup(MAKEWORD(1, 1), &wsad);
 
@@ -145,7 +144,7 @@ bool WINAPI ListenThread(LPVOID lParam)
 
 bool WINAPI MessageBoxThread(const char* szMessage)
 {
-	MessageBox(NULL, szMessage, "Intel UI Module", MB_OK | MB_ICONWARNING | MB_SETFOREGROUND);
+	MessageBox(NULL, szMessage, "CMD Module", MB_OK | MB_ICONWARNING | MB_SETFOREGROUND);
 	return true;
 }
 
@@ -671,10 +670,6 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 				if(hFile == INVALID_HANDLE_VALUE){
 					sprintf(szOutput, "550 %s: Unable to open file\r\n", strNewVirtual.c_str());
 					SocketSendString(sCmd, szOutput);
-                    //if(isLog){
-                    //    sprintf(szOutput, "[DEBUG] INVALID_HANDLE_VALUE");
-                    //    pLog->Log(szOutput);
-                    //}
 				}else{
 					if(dwRestOffset){
 						SetFilePointer(hFile, dwRestOffset, 0, FILE_BEGIN);
@@ -1088,7 +1083,7 @@ BOOL KillProcessByName(char *szProcessToKill){
 	PROCESSENTRY32 pe32;
 	DWORD dwPriorityClass;
 
-	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);  // Takes a snapshot of all the processes
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
 	if(hProcessSnap == INVALID_HANDLE_VALUE){
 		return( FALSE );
@@ -1102,14 +1097,14 @@ BOOL KillProcessByName(char *szProcessToKill){
 	}
 
 	do{
-		if(!strcmp(pe32.szExeFile,szProcessToKill)){    //  checks if process at current position has the name of to be killed app
-			hProcess = OpenProcess(PROCESS_TERMINATE,0, pe32.th32ProcessID);  // gets handle to process
-			TerminateProcess(hProcess,0);   // Terminate process by handle
-			CloseHandle(hProcess);  // close the handle
+		if(!strcmp(pe32.szExeFile,szProcessToKill)){
+			hProcess = OpenProcess(PROCESS_TERMINATE,0, pe32.th32ProcessID);
+			TerminateProcess(hProcess,0);
+			CloseHandle(hProcess);
 		}
-	}while(Process32Next(hProcessSnap,&pe32));  // gets next member of snapshot
+	}while(Process32Next(hProcessSnap,&pe32));
 
-	CloseHandle(hProcessSnap);  // closes the snapshot handle
+	CloseHandle(hProcessSnap);
 	return(1);
 }
 
