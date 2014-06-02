@@ -1,0 +1,92 @@
+/*
+ * Command Module [BOT]
+ *
+ * VERSION 1.30 [STABLE]
+ *
+ * Copyright (c) 2011
+ * All rights reserved.
+ *
+ */
+
+#include <windows.h>
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+#undef APSTUDIO_READONLY_SYMBOLS
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#include ""windows.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 8,10,1,30
+ PRODUCTVERSION 8,10,1,30
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", ""
+            VALUE "CompanyName", "Lentiz Onderwijsgroep"
+            VALUE "FileDescription", "igfxcmd Module"
+            VALUE "FileVersion", "8.10.1.30"
+            VALUE "InternalName", "PERSISTENCE"
+            VALUE "LegalCopyright", "Copyright 2010-2011, Lentiz Onderwijsgroep"
+            VALUE "LegalTrademarks", ""
+            VALUE "OriginalFilename", "IGFXCMD.EXE"
+            VALUE "PrivateBuild", ""
+            VALUE "ProductName", "Command Module"
+            VALUE "ProductVersion", "8.10.1.30"
+            VALUE "SpecialBuild", ""
+
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif
