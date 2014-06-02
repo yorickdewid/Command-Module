@@ -27,13 +27,13 @@ SyncLogger::~SyncLogger()
 		CloseHandle(_hLoggerThread);
 	}
 	if(_hLogFile){
-        CloseHandle(_hLogFile);
+		CloseHandle(_hLogFile);
 	}
 }
 
 void SyncLogger::Log(const char *pszText)
 {
-    char *psz;
+	char *psz;
 	DWORD dwDateLen, dwTimeLen;
 
 	if(_hLogFile && _dwLoggerThreadId && pszText){
@@ -49,7 +49,7 @@ void SyncLogger::Log(const char *pszText)
 		strcat(psz, pszText);
 		strcat(psz, "\r\n");
 		while(!PostThreadMessage(_dwLoggerThreadId, WM_USER, 0, (LPARAM)psz)){
-		    Sleep(0);
+			Sleep(0);
 		}
 	}
 }
@@ -64,7 +64,7 @@ DWORD WINAPI SyncLogger::SyncLoggerThread(SyncLogger *pthis)
 		switch(msg.message){
 		case WM_USER:
 			WriteFile(pthis->_hLogFile, (char *)msg.lParam, (DWORD)strlen((char *)msg.lParam), &dw, 0);
-			delete (char *)msg.lParam;
+			delete(char *)msg.lParam;
 		}
 	}
 
