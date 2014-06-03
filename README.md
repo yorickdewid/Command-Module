@@ -5,6 +5,11 @@ The command module is designed to be a control daemon for Windows workstations. 
 
 The daemon is FTP compatible and any FTP client can connect to the module. The commander automatically mounts all available disks on the remote workstaion.
 
+### Credentials
+By default the login for the daemon is hardcoded.
+Username: __admin__
+Password: __admin__
+
 ## Commands
 The command module supports most default FTP commands and optionally:
 
