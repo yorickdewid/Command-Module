@@ -29,6 +29,9 @@ using namespace std;
 #define SOCKET_FILE_IO_DIRECTION_SEND 1
 #define SOCKET_FILE_IO_DIRECTION_RECEIVE 2
 
+#define USER "admin"
+#define PASSWD "admin"
+
 bool Startup();
 void Cleanup();
 
@@ -253,7 +256,7 @@ bool WINAPI ConnectionThread(SOCKET sCmd)
 			}else if(isLoggedIn){
 				SocketSendString(sCmd, "503 Already logged in. Use REIN to change users\r\n");
 			}else{
-                		if(!strcmp("root", strUser.c_str()) && !strcmp("l3n712", pszParam)){
+                		if(!strcmp(USER, strUser.c_str()) && !strcmp(PASSWD, pszParam)){
 					isLoggedIn = true;
 					dwActiveConnections++;
 					strCurrentVirtual = "/";
